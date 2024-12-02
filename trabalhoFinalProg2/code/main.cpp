@@ -4,11 +4,11 @@
 #include <fstream>
 #include <locale.h>
 #include <string>
-
-
 using namespace std;
 
 const string users_direct = "users";
+int totalContents = 0;
+const char *path="../users";
 
 typedef struct {
     string mainName;
@@ -27,15 +27,29 @@ typedef struct {
 
 UserInfo usuario;
 
-bool logando(){
+void saveContents() {
+
+}
+
+bool addContent(content Content, string mainName, string fullName, string sinopse) {
+    if(mainName.size() > 15) return false;
+    if(fullName.size() > 50) return false;
+    if(sinopse.size() > 350) return false; 
+    Content.fullName = fullName;
+    Content.mainName = mainName;
+    Content.sinopse = sinopse;
+    return true;
+}
+
+bool logando(){ // função para fazer login dos usuários.
     setlocale(LC_ALL, "pt-br");
 
-    string username, userpass, user, pass, adm;
+    string username, userpass, user, pass, adm; 
     cout << "Escreva seu nome de usuário: "; cin >> username;
     cout << "Escreva sua senha: "; cin >> userpass;
 
-    ifstream read(username + ".txt");
-    getline(read, user);
+    ifstream read(username + ".txt"); //inputfilestream, lê o conteúdo dos arquivos.
+    getline(read, user);    
     getline(read, pass);
     getline(read, adm);
     if(user==username && pass==userpass){
@@ -48,7 +62,7 @@ bool logando(){
     }
 }
 
-void registro(){
+void registro(){ //função para registro de novos usuários.
     setlocale(LC_ALL, "pt-br");
 
     string username, userpass;
@@ -56,7 +70,7 @@ void registro(){
     cout << "Escolha um nome de usuário: " << endl; cin >> username;
     cout << "Escolha uma senha: " << endl; cin >> userpass;
 
-    ofstream file;
+    ofstream file; //outputfilestream, função que cria os arquivos com os dados das novas contas criadas.
     file.open(username+".txt");
     file << username << endl << userpass << endl << adm;
     file.close();   
