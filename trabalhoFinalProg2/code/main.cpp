@@ -2,21 +2,28 @@
 #include <iomanip>
 #include <cmath>
 #include <fstream>
+#include <filesystem>
 #include <locale.h>
 #include <string>
-using namespace std;
 
-const string users_direct = "users";
+// defines
+
+#define MAX_CONTENT 9999
+
+using namespace std;
+namespace fs = std::filesystem;
+
+const string users_direct = "users/";
 int totalContents = 0;
-const char *path="../users";
 
 typedef struct {
     string mainName;
     string fullName;
     string sinopse; 
-    float rating;
+    double rating;
     int nRatings;
     string comments[5];
+    int n_comments;
 } content;
 
 typedef struct {
@@ -26,6 +33,28 @@ typedef struct {
 } UserInfo;
 
 UserInfo usuario;
+
+content v_content[MAX_CONTENT];
+
+void createDirectory() {
+    if(!fs::exists("users")) {
+        fs::create_directory("users");
+    }
+    if(!fs::exists("content")) {
+        fs::create_directory("content");
+    }
+}
+
+void loadContents() { // estou implementando
+    string rating, nrating, nn;
+    for(const auto& entry : fs::directory_iterator("content")) {
+        if(entry.is_regular_file()) {
+            ifstream read(entry.path());
+            getline(read, v_content[totalContents].mainName);
+            cout << v_content[totalContents].mainName;
+        }
+    }
+}
 
 void saveContents() {
 
@@ -48,7 +77,7 @@ bool logando(){ // função para fazer login dos usuários.
     cout << "Escreva seu nome de usuário: "; cin >> username;
     cout << "Escreva sua senha: "; cin >> userpass;
 
-    ifstream read(username + ".txt"); //inputfilestream, lê o conteúdo dos arquivos.
+    ifstream read(users_direct + username + ".txt"); //inputfilestream, lê o conteúdo dos arquivos.
     getline(read, user);    
     getline(read, pass);
     getline(read, adm);
@@ -71,21 +100,21 @@ void registro(){ //função para registro de novos usuários.
     cout << "Escolha uma senha: " << endl; cin >> userpass;
 
     ofstream file; //outputfilestream, função que cria os arquivos com os dados das novas contas criadas.
-    file.open(username+".txt");
+    file.open(users_direct + username+".txt");
     file << username << endl << userpass << endl << adm;
     file.close();   
 }
 
 int main(){
     setlocale(LC_ALL, "pt-br");
-
     int escolha = 0;
-     
-    cout << "Bem vindo ao sistema de avaliação!" << endl << "Para login digite 0, para nova conta digite 1" << endl;
+    createDirectory(); 
+    loadContents();  
+    cout << "Bem vindo ao sistema de avaliação!" << endl << "Digite as seguintes opções: \n0 - LOGIN\n1 - REGISTRO" << endl;
     cin >> escolha;
     while(escolha != 0 && escolha != 1) {
         cout << "Input invalido, tente novamente!" << endl;
-        cout << "Para login digite 0, para nova conta digite 1" << endl;
+        cout << "Bem vindo ao sistema de avaliação!" << endl << "Digite as seguintes opções: \n0 - LOGIN\n1 - REGISTRO" << endl;
         cin >> escolha;
     }
     switch(escolha) {
