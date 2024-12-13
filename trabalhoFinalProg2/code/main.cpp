@@ -110,7 +110,6 @@ string formatWithComma(double number) { //Tirar o ponto e colocar uma vírgula p
 void saveContents() { //Salva os arquivos do conteúdo. 
     for(int i = 0; i < totalContents; i++) {
         string path = contents_direct + v_content[i].mainName + ".txt";
-        cout << path << endl;      
         if(fs::remove(path)) {
             ofstream file; //outputfilestream, função que cria os arquivos com os dados das novas contas criadas.
             file.open(contents_direct + v_content[i].mainName+".txt");
@@ -138,11 +137,15 @@ bool addContent(content Content, string mainName, string fullName, string sinops
 }
 
 bool rateContent(content *Content) { //Função para salvar a nota e o comentário para um conteúdo.
-    cout << Content->fullName << " nota(" << Content->rate << ")" << endl;
+    cout << Content->fullName << " nota(" << fixed << setprecision(1) <<  Content->rate << ")" << endl;
+    clearChat(1);
     cout << Content->tipo << endl;
     clearChat(1);
+    cout << Content->sinopse << endl;
+    clearChat(1);
+    cout << "Comentarios->: " << endl;
     for(int i = 0; i < Content->nRatings; i++) {
-        cout << Content->comments[i] << " nota(" << Content->rating[i] << endl;
+        cout << Content->comments[i] << " nota(" << Content->rating[i] << ")" << endl;
     }
     clearChat(1);
     cout << "Digite um comentário: ";
@@ -300,6 +303,8 @@ int showContentForRank() { //Mostra o rank do desenho.
 
 void showAllContents() { //Imprime a lista de todos os desenhos registrados no sistema.
     setlocale(LC_ALL, "Portuguese");
+    clearChat(1);
+    cout << "Catalogo ->:" << endl; 
     for(int i = 0; i < totalContents; i++) {
         cout << i + 1 << " - " << v_content[i].mainName << endl;
     }
@@ -531,7 +536,10 @@ void chooseOptions() { //Menu para selecionar uma ação para tomar dentro do pr
                 case 5: {
                     showAllContents();
                     clearChat(1);
-                    cout << "Digite qual vocẽ deseja avaliar";
+                    cout << "Digite qual vocẽ deseja avaliar: ";
+                    int escolha = 0;
+                    cin >> escolha;
+                    rateContent(&v_content[escolha-1]);
                     break;
                 }
                 case 6: { // mudar senha.
